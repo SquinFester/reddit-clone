@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "./ui/Button";
+import { buttonVariants } from "./ui/Button";
 import { getAuthSession } from "@/lib/auth";
+import { UserAvatarActions } from "./UserAvatarActions";
 
 export const Navbar = async () => {
   const session = await getAuthSession();
@@ -25,14 +26,26 @@ export const Navbar = async () => {
             className="w-8 md:hidden"
           />
         </Link>
-        {session?.user?.name}
-        <Button
-          asChild
-          variant="outline"
-          className="bg-transparent text-secondaryRd outline-secondaryRd h-8"
-        >
-          <Link href="/sign-in">Sign In</Link>
-        </Button>
+        {session?.user ? (
+          <UserAvatarActions
+            user={{
+              name: session.user.name || null,
+              image: session.user.image || null,
+              email: session.user.email || null,
+            }}
+          />
+        ) : (
+          <Link
+            href="/sign-in"
+            className={buttonVariants({
+              variant: "outline",
+              className:
+                "bg-transparent text-secondaryRd outline-secondaryRd h-8",
+            })}
+          >
+            Sign In
+          </Link>
+        )}
       </nav>
     </header>
   );

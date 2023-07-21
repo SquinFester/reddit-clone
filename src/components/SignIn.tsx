@@ -3,14 +3,19 @@
 import Image from "next/image";
 import { Button } from "./ui/Button";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
 
 export const SignIn = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const loginWithGoogle = async () => {
+    setIsLoading(true);
     try {
       await signIn("google");
     } catch (error) {
       console.log(error);
     }
+    setIsLoading(false);
   };
 
   return (
@@ -28,14 +33,21 @@ export const SignIn = () => {
         .
       </p>
       <div className="mt-7 flex flex-col gap-2">
-        <Button variant="outline" onClick={loginWithGoogle}>
-          <Image
-            src="/google-logo.svg"
-            width={1}
-            height={1}
-            alt="google logo"
-            className="w-6 h-6 mr-2"
-          />
+        <Button
+          variant="outline"
+          onClick={loginWithGoogle}
+          isLoading={isLoading}
+          disabled={isLoading}
+        >
+          {!isLoading && (
+            <Image
+              src="/google-logo.svg"
+              width={1}
+              height={1}
+              alt="google logo"
+              className="w-6 h-6 mr-2"
+            />
+          )}
           Continue with Google
         </Button>
       </div>
