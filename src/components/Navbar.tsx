@@ -4,8 +4,8 @@ import { Button } from "./ui/Button";
 
 export const Navbar = () => {
   return (
-    <header className="container py-2 bg-primaryBg border-b border-secondaryRd/20">
-      <nav className="flex justify-between items-center mx-auto max-w-7xl">
+    <header className="py-2 bg-primaryBg border-b border-secondaryRd/20 w-full">
+      <nav className="flex justify-between items-center mx-auto max-w-7xl container">
         <Image
           src="/reddit-logo.svg"
           alt="logo"
