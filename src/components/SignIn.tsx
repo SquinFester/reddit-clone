@@ -2,8 +2,17 @@
 
 import Image from "next/image";
 import { Button } from "./ui/Button";
+import { signIn } from "next-auth/react";
 
 export const SignIn = () => {
+  const loginWithGoogle = async () => {
+    try {
+      await signIn("google");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="text-black">
       <h1 className="text-2xl font-semibold mb-2">Sign In</h1>
@@ -19,7 +28,7 @@ export const SignIn = () => {
         .
       </p>
       <div className="mt-7 flex flex-col gap-2">
-        <Button variant="outline">
+        <Button variant="outline" onClick={loginWithGoogle}>
           <Image
             src="/google-logo.svg"
             width={1}
