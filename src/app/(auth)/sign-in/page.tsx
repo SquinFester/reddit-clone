@@ -1,15 +1,16 @@
 import { SignIn } from "@/components/SignIn";
-import { X } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
 
 const page = () => {
   return (
-    <div className="max-w-2xl flex flex-col w-2/3 mx-auto bg-white py-4 mt-5 rounded-lg gap-8">
-      <div className="flex w-full justify-end px-4">
-        <X className="w-6 h-6 text-zinc-500 " />
-      </div>
-      <div className="px-12">
-        <SignIn />
-      </div>
+    <div className="max-w-2xl flex flex-col w-full mx-auto bg-white py-4 mt-5 rounded-lg gap-8">
+      <Link href="/" className="px-4 flex items-center text-zinc-500 w-fit">
+        <ChevronLeft className="w-6 h-6 " />
+        <p>Home</p>
+      </Link>
+
+      <SignIn />
     </div>
   );
 };

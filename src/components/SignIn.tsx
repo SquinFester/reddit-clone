@@ -4,22 +4,28 @@ import Image from "next/image";
 import { Button } from "./ui/Button";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { useToast } from "@/lib/use-toast";
 
 export const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const loginWithGoogle = async () => {
     setIsLoading(true);
     try {
       await signIn("google");
     } catch (error) {
-      console.log(error);
+      toast({
+        title: "Sign in Error",
+        description: "Could not sign in",
+        variant: "destructive",
+      });
     }
     setIsLoading(false);
   };
 
   return (
-    <div className="text-black">
+    <div className="text-black px-6 md:px-12 bg-white">
       <h1 className="text-2xl font-semibold mb-2">Sign In</h1>
       <p className="text-sm">
         By continuing, you are setting up a Reddit account and agree to our{" "}

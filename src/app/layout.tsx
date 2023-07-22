@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import "./globals.css";
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/Toaster";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -9,14 +10,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
+  authModal,
 }: {
   children: React.ReactNode;
+  authModal: React.ReactNode;
 }) {
   return (
     <html lang="en">
       <body className="bg-black text-secondaryRd">
         <Navbar />
+        {authModal}
         <div className="container mx-auto max-w-7xl">{children}</div>
+        <Toaster />
       </body>
     </html>
   );
