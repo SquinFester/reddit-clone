@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
+import { LogOut, PenLine } from "lucide-react";
 
 type UserAvatarActionsProps = {
   user: Pick<User, "name" | "image" | "email">;
@@ -35,8 +37,15 @@ export const UserAvatarActions = ({ user }: UserAvatarActionsProps) => {
           {user.email && <p className="text-sm">{user.email}</p>}
         </div>
         <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Link href="/r/create" className="flex gap-2">
+            <PenLine className="w-4 h-4" />
+            Create Community
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="cursor-pointer"
+          className="cursor-pointer flex gap-2"
           onSelect={(event) => {
             event.preventDefault();
             signOut({
@@ -44,6 +53,7 @@ export const UserAvatarActions = ({ user }: UserAvatarActionsProps) => {
             });
           }}
         >
+          <LogOut className="w-4 h-4" />
           Sign Out
         </DropdownMenuItem>
       </DropdownMenuContent>
