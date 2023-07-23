@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Provider>
-        <body className="bg-[#DAE0E6] text-black">
+        <body className="bg-secondaryBg text-black">
           <Navbar />
           {authModal}
 

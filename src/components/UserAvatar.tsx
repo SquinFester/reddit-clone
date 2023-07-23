@@ -6,7 +6,7 @@ import { AvatarProps } from "@radix-ui/react-avatar";
 import { User as UserIcon } from "lucide-react";
 
 interface UserAvatarProps extends AvatarProps {
-  user: Pick<User, "name" | "image">;
+  user: Pick<User, "image">;
 }
 
 export const UserAvatar = ({ user, ...props }: UserAvatarProps) => {

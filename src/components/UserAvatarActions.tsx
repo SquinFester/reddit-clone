@@ -22,7 +22,6 @@ export const UserAvatarActions = ({ user }: UserAvatarActionsProps) => {
       <DropdownMenuTrigger>
         <UserAvatar
           user={{
-            name: user.name,
             image: user.image,
           }}
           className="w-8 h-8 cursor-pointer"

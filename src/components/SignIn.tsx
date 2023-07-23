@@ -44,6 +44,7 @@ export const SignIn = () => {
           onClick={loginWithGoogle}
           isLoading={isLoading}
           disabled={isLoading}
+          autoFocus
         >
           {!isLoading && (
             <Image
