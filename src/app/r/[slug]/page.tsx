@@ -19,18 +19,14 @@ const Page = async ({ params: { slug } }: PageProps) => {
   });
   if (!subreddit) return notFound();
 
-  const checkSubscription = !session
-    ? undefined
-    : await db.subscription.findFirst({
-        where: {
-          subreddit: {
-            name: subreddit.name,
-          },
-          user: {
-            id: session?.user.id,
-          },
-        },
-      });
+  const checkSubscription =
+    session?.user &&
+    (await db.subscription.findFirst({
+      where: {
+        subredditId: subreddit.id,
+        userId: session.user.id,
+      },
+    }));
 
   return (
     <main>

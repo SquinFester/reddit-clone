@@ -3,8 +3,10 @@
 import { useMutation } from "react-query";
 import { Button } from "./ui/Button";
 import { CreateSubscriptionPayload } from "@/lib/validators/subreddit";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "@/lib/use-toast";
+import { title } from "process";
 
 type SubscriptionToggleProps = {
   isSubscribed: boolean;
@@ -27,6 +29,19 @@ export const SubscriptionToggle = ({
       const { data } = await axios.post("/api/subreddit/subscription", payload);
       return data as string;
     },
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 401) {
+          router.push("/sign-in");
+          return;
+        }
+      }
+      return toast({
+        title: "There was a problem",
+        description: "Something went wrong, please try again",
+        variant: "destructive",
+      });
+    },
     onSuccess: () => {
       router.refresh();
     },
@@ -40,6 +55,18 @@ export const SubscriptionToggle = ({
         payload
       );
       return data as string;
+    },
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 401) {
+          router.push("/sign-in");
+        }
+      }
+      return toast({
+        title: "There was a problem",
+        description: "Something went wrong, please try again",
+        variant: "destructive",
+      });
     },
     onSuccess: () => {
       router.refresh();

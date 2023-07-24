@@ -48,7 +48,7 @@ const Layout = async ({
   return (
     <main className="mt-12 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-3">
       <div className="col-span-2">{children}</div>
-      <div className="border hidden overflow-hidden md:block border-secondaryRd rounded-md divide-y divide-secondaryRd h-fit">
+      <div className="border hidden overflow-hidden md:block border-secondaryRd rounded-md divide-y divide-secondaryRd h-fit sticky top-0">
         <div className="bg-primaryBg font-semibold p-4 text-white">
           About r/{subreddit.name}
         </div>
