@@ -1,11 +1,20 @@
 "use client";
 
 import TextareaAutosize from "react-textarea-autosize";
-import { useForm, SubmitHandler } from "react-hook-form";
-import type EditorJS from "@editorjs/editorjs";
+import { useForm } from "react-hook-form";
 import { PostValidator, PostValidatorRequest } from "@/lib/validators/post";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useCallback, useRef } from "react";
+import { useEffect, useRef } from "react";
+import EditorJSClass from "@editorjs/editorjs";
+import type EditorJS from "@editorjs/editorjs";
+import Header from "@editorjs/header";
+import LinkTool from "@editorjs/link";
+import Embed from "@editorjs/embed";
+import Table from "@editorjs/table";
+import List from "@editorjs/list";
+import Code from "@editorjs/code";
+import InlineCode from "@editorjs/inline-code";
+import ImageTool from "@editorjs/image";
 
 export const Editor = ({ subredditId }: { subredditId: string }) => {
   const {
@@ -21,27 +30,37 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
     },
   });
 
-  const ref = useRef<EditorJS>();
+  const editorRef = useRef<EditorJS>();
 
-  const initializeEditor = useCallback(async () => {
-    const EditorJS = (await import("@editorjs/editorjs")).default;
-    const Header = (await import("@editorjs/header")).default;
-    const Embed = (await import("@editorjs/embed")).default;
-    const Table = (await import("@editorjs/table")).default;
-    const List = (await import("@editorjs/list")).default;
-    const Code = (await import("@editorjs/code")).default;
-    const Linktool = (await import("@editorjs/link")).default;
-    const InlineCode = (await import("@editorjs/inline-code")).default;
-    const ImageTool = (await import("@editorjs/image")).default;
-
-    if (!ref.current) {
-      const editor = new EditorJS({
-        holder: "editorjs",
-        onReady() {
-          ref.current = editor;
+  useEffect(() => {
+    const editorConfig = {
+      holder: "editorjs",
+      tools: {
+        header: Header,
+        list: List,
+        embed: Embed,
+        linkTool: {
+          class: LinkTool,
+          config: {
+            endpoint: "api/link",
+          },
         },
-      });
-    }
+        table: Table,
+        code: Code,
+        InlineCode: InlineCode,
+        image: {
+          class: ImageTool,
+        },
+      },
+    };
+    editorRef.current = new EditorJSClass(editorConfig);
+
+    return () => {
+      if (editorRef.current) {
+        editorRef.current.destroy();
+        editorRef.current = undefined;
+      }
+    };
   }, []);
 
   return (

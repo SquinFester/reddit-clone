@@ -1,7 +1,7 @@
 import { Editor } from "@/components/Editor";
 import { Button } from "@/components/ui/Button";
 import { db } from "@/lib/db";
-import { notFound, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 
 type PageProps = {
   params: {
@@ -24,13 +24,8 @@ const Page = async ({ params: { slug } }: PageProps) => {
         Create Post{" "}
         <span className="text-zinc-500 font-medium">in r/{slug}</span>
       </h1>
-      <Editor />
-      <Button
-        className="w-full"
-        type="submit"
-        form="subreddit-post-form"
-        subredditId={subreddit.id}
-      >
+      <Editor subredditId={subreddit.id} />
+      <Button className="w-full" type="submit" form="subreddit-post-form">
         Post
       </Button>
     </main>
