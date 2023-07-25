@@ -39,6 +39,8 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
     const editorConfig = {
       holder: "editorjs",
       placeholder: "Start writing your post...",
+      inlineToolbar: true,
+      data: { blocks: [] },
       tools: {
         header: Header,
         list: List,
@@ -46,7 +48,7 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
         linkTool: {
           class: LinkTool,
           config: {
-            endpoint: "api/link",
+            endpoint: "/api/link",
           },
         },
         table: Table,
@@ -90,7 +92,6 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
       content: block,
       subredditId,
     };
-    console.log(payload);
   };
 
   return (
