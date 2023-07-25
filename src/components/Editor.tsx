@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import { PostValidator, PostValidatorRequest } from "@/lib/validators/post";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef } from "react";
-import EditorJSClass from "@editorjs/editorjs";
 import type EditorJS from "@editorjs/editorjs";
+import EditorJSClass from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import LinkTool from "@editorjs/link";
 import Embed from "@editorjs/embed";
@@ -15,11 +15,14 @@ import List from "@editorjs/list";
 import Code from "@editorjs/code";
 import InlineCode from "@editorjs/inline-code";
 import ImageTool from "@editorjs/image";
+import { useMutation } from "react-query";
+import axios from "axios";
 
 export const Editor = ({ subredditId }: { subredditId: string }) => {
   const {
     register,
     handleSubmit,
+
     formState: { errors },
   } = useForm<PostValidatorRequest>({
     resolver: zodResolver(PostValidator),
@@ -35,6 +38,7 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
   useEffect(() => {
     const editorConfig = {
       holder: "editorjs",
+      placeholder: "Start writing your post...",
       tools: {
         header: Header,
         list: List,
@@ -63,14 +67,42 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
     };
   }, []);
 
+  const { mutate: createPost } = useMutation({
+    mutationFn: async ({
+      title,
+      content,
+      subredditId,
+    }: PostValidatorRequest) => {
+      const payload: PostValidatorRequest = {
+        title,
+        content,
+        subredditId,
+      };
+
+      const { data } = await axios.post("/api/subreddit/post/create", payload);
+    },
+  });
+
+  const onSubmit = async (data: PostValidatorRequest) => {
+    const block = await editorRef.current?.save();
+    const payload: PostValidatorRequest = {
+      title: data.title,
+      content: block,
+      subredditId,
+    };
+    console.log(payload);
+  };
+
   return (
     <form
       id="subreddit-post-form"
       className="bg-white outline outline-secondaryBg rounded-lg p-5 w-full"
+      onSubmit={handleSubmit(onSubmit)}
     >
       <TextareaAutosize
         className="resize-none text-5xl font-bold focus:outline-none w-full appearance-none"
         placeholder="Title"
+        {...register("title")}
       />
       <div id="editorjs" className="min-h-[500px]" />
     </form>
