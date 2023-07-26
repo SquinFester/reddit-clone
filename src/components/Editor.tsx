@@ -56,6 +56,13 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
         InlineCode: InlineCode,
         image: {
           class: ImageTool,
+          config: {
+            uploader: {
+              async uploadByFile(file: File) {
+                const [res] = await this.upload();
+              },
+            },
+          },
         },
       },
     };
