@@ -16,9 +16,15 @@ import Code from "@editorjs/code";
 import InlineCode from "@editorjs/inline-code";
 import ImageTool from "@editorjs/image";
 import { useMutation } from "react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import { uploadFiles } from "@/lib/uploadthing";
+import { toast } from "@/lib/use-toast";
+import { usePathname, useRouter } from "next/navigation";
 
 export const Editor = ({ subredditId }: { subredditId: string }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const {
     register,
     handleSubmit,
@@ -59,7 +65,16 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
           config: {
             uploader: {
               async uploadByFile(file: File) {
-                const [res] = await this.upload();
+                const [res] = await uploadFiles({
+                  files: [file],
+                  endpoint: "imageUploader",
+                });
+                return {
+                  success: 1,
+                  file: {
+                    url: res.fileUrl,
+                  },
+                };
               },
             },
           },
@@ -89,6 +104,28 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
       };
 
       const { data } = await axios.post("/api/subreddit/post/create", payload);
+      return data as string;
+    },
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 403) {
+          return toast({
+            title: "You must be subscriber.",
+            description: "Subscirbe post to create a new post",
+            variant: "destructive",
+          });
+        }
+        if (err.response?.status === 401) return router.push("/sign-in");
+      }
+    },
+    onSuccess: () => {
+      const newPath = pathname.split("/").slice(0, -1).join("/");
+      router.push(newPath);
+
+      router.refresh();
+      return toast({
+        description: "Your post has been published.",
+      });
     },
   });
 
@@ -99,6 +136,7 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
       content: block,
       subredditId,
     };
+    createPost(payload);
   };
 
   return (
