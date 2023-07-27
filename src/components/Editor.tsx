@@ -107,7 +107,7 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
       const { data } = await axios.post("/api/subreddit/post/create", payload);
       return data as string;
     },
-    onError: (err) => {
+    onError: (err: any) => {
       if (err instanceof AxiosError) {
         if (err.response?.status === 403) {
           return toast({

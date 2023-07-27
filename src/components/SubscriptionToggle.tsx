@@ -78,6 +78,7 @@ export const SubscriptionToggle = ({
     if (isSubscribed) {
       return (
         <Button
+          className="w-full"
           onClick={() => {
             isLogged ? removeSubscription() : router.push("/sign-in");
           }}
@@ -90,6 +91,7 @@ export const SubscriptionToggle = ({
     } else {
       return (
         <Button
+          className="w-full"
           onClick={() => {
             isLogged ? addSubscription() : router.push("/sign-in");
           }}
