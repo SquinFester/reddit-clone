@@ -25,9 +25,6 @@ const Page = async ({ params: { slug } }: PageProps) => {
         <span className="text-zinc-500 font-medium">in r/{slug}</span>
       </h1>
       <Editor subredditId={subreddit.id} />
-      <Button className="w-full" type="submit" form="subreddit-post-form">
-        Post
-      </Button>
     </main>
   );
 };

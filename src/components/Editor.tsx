@@ -20,6 +20,7 @@ import axios, { AxiosError } from "axios";
 import { uploadFiles } from "@/lib/uploadthing";
 import { toast } from "@/lib/use-toast";
 import { usePathname, useRouter } from "next/navigation";
+import { Button } from "./ui/Button";
 
 export const Editor = ({ subredditId }: { subredditId: string }) => {
   const router = useRouter();
@@ -91,7 +92,7 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
     };
   }, []);
 
-  const { mutate: createPost } = useMutation({
+  const { mutate: createPost, isLoading } = useMutation({
     mutationFn: async ({
       title,
       content,
@@ -140,17 +141,28 @@ export const Editor = ({ subredditId }: { subredditId: string }) => {
   };
 
   return (
-    <form
-      id="subreddit-post-form"
-      className="bg-white outline outline-secondaryBg rounded-lg p-5 w-full"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <TextareaAutosize
-        className="resize-none text-5xl font-bold focus:outline-none w-full appearance-none"
-        placeholder="Title"
-        {...register("title")}
-      />
-      <div id="editorjs" className="min-h-[500px]" />
-    </form>
+    <>
+      <form
+        id="subreddit-post-form"
+        className="bg-white outline outline-secondaryBg rounded-lg p-5 w-full"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <TextareaAutosize
+          className="resize-none text-5xl font-bold focus:outline-none w-full appearance-none"
+          placeholder="Title"
+          {...register("title")}
+        />
+        <div id="editorjs" className="min-h-[500px]" />
+      </form>
+      <Button
+        className="w-full"
+        type="submit"
+        isLoading={isLoading}
+        disabled={isLoading}
+        form="subreddit-post-form"
+      >
+        Post
+      </Button>
+    </>
   );
 };

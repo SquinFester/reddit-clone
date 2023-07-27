@@ -1,7 +1,9 @@
 import { SubscriptionToggle } from "@/components/SubscriptionToggle";
+import { buttonVariants } from "@/components/ui/Button";
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { format } from "date-fns";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 const Layout = async ({
@@ -61,14 +63,25 @@ const Layout = async ({
             Members
             <p>{members}</p>
           </div>
-          <SubscriptionToggle
-            isSubscribed={subscriptionExists}
-            isAuthor={
-              session?.user ? session?.user.id === subreddit.creatorId : false
-            }
-            subredditId={subreddit.id}
-            isLogged={!!session?.user}
-          />
+          <div className="flex flex-col gap-5 items-center">
+            <SubscriptionToggle
+              isSubscribed={subscriptionExists}
+              isAuthor={
+                session?.user ? session?.user.id === subreddit.creatorId : false
+              }
+              subredditId={subreddit.id}
+              isLogged={!!session?.user}
+            />
+            <Link
+              className={buttonVariants({
+                variant: "secondary",
+                className: "w-full",
+              })}
+              href={`/r/${slug}/submit`}
+            >
+              Create a post
+            </Link>
+          </div>
         </div>
       </div>
     </main>

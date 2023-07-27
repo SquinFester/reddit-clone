@@ -1,4 +1,5 @@
 import MiniPostCreator from "@/components/MiniPostCreator";
+import { PostFeed } from "@/components/PostFeed";
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { notFound } from "next/navigation";
@@ -16,7 +17,19 @@ const Page = async ({ params: { slug } }: PageProps) => {
     where: {
       name: slug,
     },
+    include: {
+      posts: {
+        include: {
+          author: true,
+          votes: true,
+          comments: true,
+          subreddit: true,
+        },
+        take: 2,
+      },
+    },
   });
+
   if (!subreddit) return notFound();
 
   const checkSubscription =
@@ -34,6 +47,11 @@ const Page = async ({ params: { slug } }: PageProps) => {
       <MiniPostCreator
         image={session?.user?.image || null}
         subscribeExist={!!checkSubscription}
+      />
+      <PostFeed
+        initialPosts={subreddit.posts}
+        subredditName={subreddit.name}
+        userId={session?.user.id}
       />
     </main>
   );
