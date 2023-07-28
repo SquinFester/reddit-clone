@@ -75,7 +75,7 @@ const Layout = async ({
             <Link
               className={buttonVariants({
                 variant: "secondary",
-                className: "w-full",
+                className: "w-full bg-gray-100",
               })}
               href={`/r/${slug}/submit`}
             >
