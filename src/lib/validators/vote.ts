@@ -1,5 +1,8 @@
-import {z} from "zod"
+import { z } from "zod";
 
-export const VoteValidator = z.object({
-    vote:
-})
+export const VodeValidator = z.object({
+  postId: z.string(),
+  voteType: z.enum(["UP", "DOWN", "DELETE"]),
+});
+
+export type VodeValidatorType = z.infer<typeof VodeValidator>;

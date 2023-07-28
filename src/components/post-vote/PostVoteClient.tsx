@@ -8,6 +8,7 @@ import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMutation } from "react-query";
 import axios from "axios";
+import { VodeValidatorType } from "@/lib/validators/vote";
 
 type PostVoteClient = {
   postId: string;
@@ -22,12 +23,13 @@ export const PostVoteClient = ({
   initialDownVoteAmt,
   initalVote,
 }: PostVoteClient) => {
-  const [votesAmt, setVoteAmt] = useState({
+  const [currentVote, setCurrentVote] = useState(initalVote);
+  const prevVote = usePrevious(currentVote);
+
+  const [votesAmt, setVotesAmt] = useState({
     upVote: initialUpVoteAmt,
     downVote: initialDownVoteAmt,
   });
-  const [currentVote, setCurrentVote] = useState(initalVote);
-  const prevVote = usePrevious(currentVote);
 
   useEffect(() => {
     setCurrentVote(initalVote);
@@ -36,18 +38,52 @@ export const PostVoteClient = ({
   const currentVoteHandler = (vote: VoteType) => {
     if (vote === currentVote) {
       setCurrentVote(null);
-      mutate("");
+      votesAmtHandler("DELETE");
+      mutate("DELETE");
     } else {
       setCurrentVote(vote);
+      votesAmtHandler(vote);
+      mutate(vote);
     }
   };
 
-  // empty vote is equal to delete vote from db
+  // to check curret vote when page is loaded u need chack session inside client side and provider to it
+
+  const votesAmtHandler = (vote: VoteType | "DELETE") => {
+    if (vote === "UP") {
+      setVotesAmt(() => ({
+        upVote: votesAmt.upVote + 1,
+        downVote: initialDownVoteAmt,
+      }));
+    }
+    if (vote === "DOWN") {
+      setVotesAmt(() => ({
+        upVote: initialUpVoteAmt,
+        downVote: votesAmt.downVote - 1,
+      }));
+    }
+    if (vote === "DELETE") {
+      setVotesAmt(() => ({
+        upVote: initialUpVoteAmt,
+        downVote: initialDownVoteAmt,
+      }));
+    }
+  };
 
   const { mutate } = useMutation({
-    mutationFn: async (vote: VoteType | "") => {
-      const { data } = await axios.post("/api/post/vote", vote);
+    mutationFn: async (vote: VoteType | "DELETE") => {
+      const payload: VodeValidatorType = {
+        postId,
+        voteType: vote,
+      };
+      const { data } = await axios.post("/api/subreddit/post/vote", payload);
       return data as string;
+    },
+    onError: () => {
+      console.log("error");
+    },
+    onSuccess: () => {
+      console.log("succes");
     },
   });
 
@@ -65,7 +101,7 @@ export const PostVoteClient = ({
           })}
         />
         <p className="text-center py-2 font-medium text-sm text-zinc-900">
-          {initialUpVoteAmt}
+          {votesAmt.upVote}
         </p>
       </Button>
       <Button
@@ -80,7 +116,7 @@ export const PostVoteClient = ({
           })}
         />
         <p className="text-center py-2 font-medium text-sm text-zinc-900">
-          {initialDownVoteAmt}
+          {votesAmt.downVote}
         </p>
       </Button>
     </div>

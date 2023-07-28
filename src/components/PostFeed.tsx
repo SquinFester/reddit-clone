@@ -56,7 +56,13 @@ export const PostFeed = ({ initialPosts, subredditName, userId }: PostFeed) => {
             </li>
           );
         } else {
-          return <Post subredditName={post.subreddit.name} post={post} />;
+          return (
+            <Post
+              subredditName={post.subreddit.name}
+              post={post}
+              key={post.id}
+            />
+          );
         }
       })}
     </ul>
