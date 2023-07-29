@@ -7,8 +7,9 @@ import { Button } from "../ui/Button";
 import { ArrowBigDown, ArrowBigUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMutation } from "react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { VodeValidatorType } from "@/lib/validators/vote";
+import { useRouter } from "next/navigation";
 
 type PostVoteClient = {
   postId: string;
@@ -35,6 +36,8 @@ export const PostVoteClient = ({
     setCurrentVote(initialVote);
   }, [initialVote]);
 
+  const router = useRouter();
+
   const currentVoteHandler = (vote: VoteType) => {
     if (vote === currentVote) {
       setCurrentVote(null);
@@ -54,14 +57,12 @@ export const PostVoteClient = ({
         downVote:
           currentVote === "DOWN" ? votesAmt.downVote + 1 : votesAmt.downVote,
       }));
-    }
-    if (vote === "DOWN") {
+    } else if (vote === "DOWN") {
       setVotesAmt(() => ({
         upVote: currentVote === "UP" ? votesAmt.upVote - 1 : votesAmt.upVote,
         downVote: votesAmt.downVote - 1,
       }));
-    }
-    if (vote === "DELETE") {
+    } else if (vote === "DELETE") {
       setVotesAmt(() => ({
         upVote: currentVote === "UP" ? votesAmt.upVote - 1 : votesAmt.upVote,
         downVote:
@@ -79,11 +80,17 @@ export const PostVoteClient = ({
       const { data } = await axios.post("/api/subreddit/post/vote", payload);
       return data as string;
     },
-    onError: () => {
-      console.log("error");
-    },
-    onSuccess: () => {
-      console.log("succes");
+    onError: async (err) => {
+      if (err instanceof AxiosError) {
+        if (err.response?.status === 401) {
+          setCurrentVote(undefined);
+          setVotesAmt({
+            upVote: initialUpVoteAmt,
+            downVote: initialDownVoteAmt,
+          });
+          router.push("/sign-in");
+        }
+      }
     },
   });
 
