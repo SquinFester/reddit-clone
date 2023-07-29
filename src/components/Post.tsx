@@ -1,5 +1,11 @@
 import { formatTimeToNow } from "@/lib/utils";
-import { Comment, Post as PostType, User, Vote } from "@prisma/client";
+import {
+  Comment,
+  Post as PostType,
+  User,
+  Vote,
+  VoteType,
+} from "@prisma/client";
 import { useRef } from "react";
 import { MessageSquare } from "lucide-react";
 import { EditorOutput } from "./EditorOutput";
@@ -12,9 +18,10 @@ type PostProps = {
     votes: Vote[];
     comments: Comment[];
   };
+  currentVote?: VoteType;
 };
 
-export const Post = ({ subredditName, post }: PostProps) => {
+export const Post = ({ subredditName, post, currentVote }: PostProps) => {
   const pRef = useRef<HTMLDivElement>(null);
 
   const upVoteAmt = post.votes.reduce((acc, vote) => {
@@ -26,10 +33,6 @@ export const Post = ({ subredditName, post }: PostProps) => {
     if (vote.type === "DOWN") return acc - 1;
     return acc;
   }, 0);
-
-  const currentVote = post.votes.find((vote) => {
-    vote.userId === post.authorId;
-  });
 
   return (
     <div className="rounded-md bg-white shadow flex flex-col overflow-hidden">
@@ -67,7 +70,7 @@ export const Post = ({ subredditName, post }: PostProps) => {
           postId={post.id}
           initialUpVoteAmt={upVoteAmt}
           initialDownVoteAmt={downVoteAmt}
-          initalVote={currentVote?.type}
+          initialVote={currentVote}
         />
       </div>
     </div>

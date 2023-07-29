@@ -14,16 +14,16 @@ type PostVoteClient = {
   postId: string;
   initialUpVoteAmt: number;
   initialDownVoteAmt: number;
-  initalVote?: VoteType | null;
+  initialVote?: VoteType | null;
 };
 
 export const PostVoteClient = ({
   postId,
   initialUpVoteAmt,
   initialDownVoteAmt,
-  initalVote,
+  initialVote,
 }: PostVoteClient) => {
-  const [currentVote, setCurrentVote] = useState(initalVote);
+  const [currentVote, setCurrentVote] = useState(initialVote);
   const prevVote = usePrevious(currentVote);
 
   const [votesAmt, setVotesAmt] = useState({
@@ -32,8 +32,8 @@ export const PostVoteClient = ({
   });
 
   useEffect(() => {
-    setCurrentVote(initalVote);
-  }, [initalVote]);
+    setCurrentVote(initialVote);
+  }, [initialVote]);
 
   const currentVoteHandler = (vote: VoteType) => {
     if (vote === currentVote) {
@@ -47,25 +47,25 @@ export const PostVoteClient = ({
     }
   };
 
-  // to check curret vote when page is loaded u need chack session inside client side and provider to it
-
   const votesAmtHandler = (vote: VoteType | "DELETE") => {
     if (vote === "UP") {
       setVotesAmt(() => ({
         upVote: votesAmt.upVote + 1,
-        downVote: initialDownVoteAmt,
+        downVote:
+          currentVote === "DOWN" ? votesAmt.downVote + 1 : votesAmt.downVote,
       }));
     }
     if (vote === "DOWN") {
       setVotesAmt(() => ({
-        upVote: initialUpVoteAmt,
+        upVote: currentVote === "UP" ? votesAmt.upVote - 1 : votesAmt.upVote,
         downVote: votesAmt.downVote - 1,
       }));
     }
     if (vote === "DELETE") {
       setVotesAmt(() => ({
-        upVote: initialUpVoteAmt,
-        downVote: initialDownVoteAmt,
+        upVote: currentVote === "UP" ? votesAmt.upVote - 1 : votesAmt.upVote,
+        downVote:
+          currentVote === "DOWN" ? votesAmt.downVote + 1 : votesAmt.downVote,
       }));
     }
   };

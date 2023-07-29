@@ -42,17 +42,17 @@ export const PostFeed = ({ initialPosts, subredditName, userId }: PostFeed) => {
   return (
     <ul className="flex flex-col gap-8 mt-5">
       {posts.map((post, index) => {
-        const votesAmnt = post.votes.reduce((acc, vote) => {
-          if (vote.type === "UP") return acc + 1;
-          if (vote.type === "DOWN") return acc - 1;
-          return acc;
-        }, 0);
+        const currentVote = post.votes.find((vote) => vote.userId === userId)
+          ?.type;
 
-        const currentVote = post.votes.find((vote) => vote.userId === userId);
         if (index === posts.length - 1) {
           return (
             <li key={post.id} ref={ref}>
-              <Post subredditName={post.subreddit.name} post={post} />
+              <Post
+                subredditName={post.subreddit.name}
+                post={post}
+                currentVote={currentVote}
+              />
             </li>
           );
         } else {
@@ -60,6 +60,7 @@ export const PostFeed = ({ initialPosts, subredditName, userId }: PostFeed) => {
             <Post
               subredditName={post.subreddit.name}
               post={post}
+              currentVote={currentVote}
               key={post.id}
             />
           );
