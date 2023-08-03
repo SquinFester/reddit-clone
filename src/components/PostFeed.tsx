@@ -10,7 +10,7 @@ import { Post } from "./Post";
 type PostFeed = {
   initialPosts: ExtendedPost[];
   subredditName?: string;
-  userId: string | undefined;
+  userId?: string | undefined;
 };
 
 export const PostFeed = ({ initialPosts, subredditName, userId }: PostFeed) => {
