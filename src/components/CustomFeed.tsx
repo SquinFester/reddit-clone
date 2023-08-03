@@ -34,5 +34,5 @@ export const CustomFeed = async () => {
     take: 2,
   });
 
-  return <PostFeed initialPosts={posts} />;
+  return <PostFeed initialPosts={posts} userId={session?.user.id} />;
 };

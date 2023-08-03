@@ -25,6 +25,9 @@ const Page = async ({ params: { slug } }: PageProps) => {
           comments: true,
           subreddit: true,
         },
+        orderBy: {
+          createdAt: "desc",
+        },
         take: 2,
       },
     },
